@@ -1,7 +1,5 @@
 import { Component } from 'react';
-
 import './randomChar.scss';
-import thor from '../../resources/img/thor.jpeg';
 import mjolnir from '../../resources/img/mjolnir.png';
 import MarvelService from './../../services/MarvelService';
 import getRandomNum from './../../utils/getRandomNum';
@@ -21,6 +19,7 @@ class RandomChar extends Component {
     
     onCharLoaded = (char) => {
         this.setState({char});
+        this.onCutDescription();
     }
     
     marvelService = new MarvelService();
@@ -30,6 +29,19 @@ class RandomChar extends Component {
         
         this.marvelService.getCharacter(id)
         .then(res => this.onCharLoaded(res));
+    }
+    
+    onCutDescription = () => {
+        let newStr = this.state.char.description;
+          
+        if(newStr.length > 200) {
+            this.setState(({char}) => ({
+                char: {
+                    ...char,
+                    description: newStr.slice(0, 195) + '...'
+                }
+            }))
+        };
     }
     
     render() {
@@ -42,7 +54,7 @@ class RandomChar extends Component {
                     <div className="randomchar__info">
                         <p className="randomchar__name">{name}</p>
                         <p className="randomchar__descr">
-                            {description}
+                            {!description ? 'Description is not found' : description}
                         </p>
                         <div className="randomchar__btns">
                             <a href={homepage} className="button button__main">
