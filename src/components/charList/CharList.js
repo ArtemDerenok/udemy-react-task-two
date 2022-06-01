@@ -16,6 +16,8 @@ class CharList extends Component {
         }
     }
     
+    service = new MarvelService();
+    
     componentDidMount() {
         this.updateChars();
     }
@@ -24,12 +26,15 @@ class CharList extends Component {
         this.setState({chars, loading: false})
     }
     
+    onCharLoading = () => {
+        this.setState({loading: true});
+    }
+    
     updateChars = () => {
-        const service = new MarvelService();
-        
-        service.getAllCharacters()
+        this.onCharLoading();
+        this.service.getAllCharacters()
             .then(res => this.onCharsLoaded(res))
-            .catch()
+            .catch(e => this.onError());
     }
     
     onError = () => {
@@ -41,9 +46,10 @@ class CharList extends Component {
     
     render() {
         const {chars, loading, error} = this.state;
+        const {onSelectedChar} = this.props;
         const errorMessage = error ? <ErrorMessage /> : null;
         const spinner = loading ? <Spinner /> : null;
-        const content = !(errorMessage || spinner) ? chars.map(item => <CharCard key={item.id} charName={item.name} charId={item.id} imageSrc={item.thumbnail} />) : null;
+        const content = !(error || loading) ? chars.map(item => <CharCard onSelectedChar={onSelectedChar} key={item.id} charName={item.name} charId={item.id} imageSrc={item.thumbnail} />) : null;
         
         return (
             <div className="char__list">

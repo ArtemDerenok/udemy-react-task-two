@@ -26,11 +26,15 @@ class RandomChar extends Component {
         this.onCutDescription();
     }
     
+    onCharLoading = () => {
+        this.setState({loading: true});
+    }
+    
     marvelService = new MarvelService();
     
     updateChar = () => {
         const id = getRandomNum(1011000, 1011400);
-        
+        this.onCharLoading();
         this.marvelService.getCharacter(id)
         .then(res => this.onCharLoaded(res))
         .catch(e => {
