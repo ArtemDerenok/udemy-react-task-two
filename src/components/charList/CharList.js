@@ -1,4 +1,5 @@
 import { Component } from 'react';
+import PropTypes from 'prop-types';
 import MarvelService from '../../services/MarvelService';
 import CharCard from './CharCard';
 import Spinner from '../spinner/Spinner';
@@ -13,26 +14,46 @@ class CharList extends Component {
             chars: [],
             loading: true,
             error: false,
+            newItemsLoading: false,
+            offset: 210,
+            charEnded: false,
         }
     }
     
     service = new MarvelService();
     
     componentDidMount() {
+        this.onCharLoading();
         this.updateChars();
     }
     
-    onCharsLoaded = (chars) => {
-        this.setState({chars, loading: false})
+    onCharsLoaded = (charsList) => {
+        let ended = false;
+        
+        if (charsList.length < 9) {
+            ended = true;
+        }
+        
+        this.setState(({chars, offset}) => ({
+            chars: chars.concat(charsList),
+            loading: false,
+            newItemsLoading: false,
+            offset: offset + 9,
+            charEnded: ended,
+        }))
     }
     
     onCharLoading = () => {
         this.setState({loading: true});
     }
     
-    updateChars = () => {
-        this.onCharLoading();
-        this.service.getAllCharacters()
+    onNewCharsLoading = () => {
+        this.setState({newItemsLoading: true});
+    }
+    
+    updateChars = (offset) => {
+        this.onNewCharsLoading();
+        this.service.getAllCharacters(offset)
             .then(res => this.onCharsLoaded(res))
             .catch(e => this.onError());
     }
@@ -45,7 +66,7 @@ class CharList extends Component {
     }
     
     render() {
-        const {chars, loading, error} = this.state;
+        const {chars, loading, error, offset, newItemsLoading, charEnded} = this.state;
         const {onSelectedChar} = this.props;
         const errorMessage = error ? <ErrorMessage /> : null;
         const spinner = loading ? <Spinner /> : null;
@@ -58,12 +79,16 @@ class CharList extends Component {
                 {spinner}
                 {content}
             </ul>
-            <button className="button button__main button__long">
+            <button disabled={newItemsLoading} style={{'display': charEnded ? 'none' : 'block'}} className="button button__main button__long" onClick={() => this.updateChars(offset)}>
                 <div className="inner">load more</div>
             </button>
         </div>
         )
     }
 }
+
+CharList.propTypes = {
+    onSelectedChar: PropTypes.func.isRequired,
+};
 
 export default CharList;

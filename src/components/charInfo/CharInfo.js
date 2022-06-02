@@ -1,7 +1,7 @@
+import PropTypes from 'prop-types';
 import { Component } from 'react';
 import MarvelService from '../../services/MarvelService';
 import './charInfo.scss';
-import thor from '../../resources/img/thor.jpeg';
 import Spinner from '../spinner/Spinner';
 import ErrorMessage from '../errorMessage/errorMessage';
 import Skeleton from '../skeleton/Skeleton';
@@ -77,6 +77,10 @@ class CharInfo extends Component {
         );
     }
 }
+
+CharInfo.propTypes = {
+    charId: PropTypes.number
+};
 
 const View = ({char}) => {
     
