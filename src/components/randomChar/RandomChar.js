@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import mjolnir from '../../resources/img/mjolnir.png';
-import MarvelService from './../../services/MarvelService';
+import useMarvelService from './../../services/MarvelService';
 import getRandomNum from './../../utils/getRandomNum';
 import Spinner from '../spinner/Spinner';
 import ErrorMessage from './../errorMessage/errorMessage';
@@ -8,8 +8,8 @@ import './randomChar.scss';
 
 const RandomChar = () => {
     const [char, setChar] = useState(null);
-    const [loading, setLoading] = useState(true);
-    const [error, setError] = useState(false);
+    
+    const {loading, error, getCharacter, clearError} = useMarvelService();
     
     useEffect(() => {
         updateChar()
@@ -23,28 +23,13 @@ const RandomChar = () => {
     
     const onCharLoaded = (charObj) => {
         setChar(charObj);
-        setLoading(false);
     }
     
-    const onCharLoading = () => {
-        setLoading(true);
-    }
-    
-    const marvelService = new MarvelService();
     
     const updateChar = () => {
+        clearError();
         const id = getRandomNum(1011000, 1011400);
-        onCharLoading();
-        marvelService.getCharacter(id).then(res => {
-            onCharLoaded(res)
-        }).catch(e => {
-            onError();
-        });
-    }
-    
-    const onError = () => {
-        setLoading(false);
-        setError(true);
+        getCharacter(id).then(onCharLoaded);
     }
     
     const onCutDescription = () => {
@@ -58,7 +43,7 @@ const RandomChar = () => {
 
     const errorMessage = error ? <ErrorMessage /> : null;
     const spinner = loading ? <Spinner /> : null;
-    const content = !(loading || error) ? <View char={char} /> : null; 
+    const content = !(loading || error || !char) ? <View char={char} /> : null; 
         
     return (
         <div className="randomchar">
