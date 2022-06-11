@@ -1,10 +1,8 @@
 import { useState } from "react";
+import { Routes, Route } from "react-router-dom";
 import AppHeader from "../appHeader/AppHeader";
-import RandomChar from "../randomChar/RandomChar";
-import CharList from "../charList/CharList";
-import CharInfo from "../charInfo/CharInfo";
 import decoration from '../../resources/img/vision.png';
-import ErrorBoundary from "../errorBoundary/ErrorBoundary";
+import {MainPage, ComicsPage, NotFound, SingleComic} from '../pages';
 
 const App = () => {
     const [selectedChar, setSelectedChar] = useState(null)
@@ -14,22 +12,17 @@ const App = () => {
     }
 
     return (
-        <div className="app">
+            <div className="app">
             <AppHeader/>
             <main>
-                <ErrorBoundary>
-                    <RandomChar/>
-                </ErrorBoundary>
-                <div className="char__content">
-                    <ErrorBoundary>
-                        <CharList onSelectedChar={onSelectedChar} />
-                    </ErrorBoundary>
-                    <ErrorBoundary>
-                        <CharInfo charId={selectedChar} />
-                    </ErrorBoundary>
-                </div>
-                    <img className="bg-decoration" src={decoration} alt="vision"/>
-                </main>
+            <Routes>
+                <Route path="/" element={<MainPage onSelectedChar={onSelectedChar} selectedChar={selectedChar} />} />
+                <Route path="/comics" element={<ComicsPage />} />
+                <Route path="/comics/:comicId" element={<SingleComic />} />
+                <Route path="*" element={<NotFound />} />
+            </Routes>
+                <img className="bg-decoration" src={decoration} alt="vision"/>
+            </main>
             </div>
     )
 }
