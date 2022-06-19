@@ -2,7 +2,7 @@ import { useState, lazy, Suspense} from "react";
 import { Routes, Route, useLocation } from "react-router-dom";
 import AppHeader from "../appHeader/AppHeader";
 import decoration from '../../resources/img/vision.png';
-import {ComicsPage, SingleComic} from '../pages';
+import {ComicsPage, SingleComic, SinglePage, SingleChar} from '../pages';
 import Spinner from "../spinner/Spinner";
 import { TransitionGroup, CSSTransition } from "react-transition-group";
 import './app.scss';
@@ -28,7 +28,8 @@ const App = () => {
                     <Routes location={location}>
                         <Route path="/" element={<MainPage onSelectedChar={onSelectedChar} selectedChar={selectedChar} />} />
                         <Route path="/comics" element={<ComicsPage />} />
-                        <Route path="/comics/:comicId" element={<SingleComic />} />
+                        <Route path="/comics/:comicId" element={<SinglePage Component={SingleComic} dataType='comic' />} />
+                        <Route path="/characters/:charId" element={<SinglePage Component={SingleChar} dataType='char' />} />
                         <Route path="*" element={<NotFound />} />
                     </Routes>
                 </CSSTransition>

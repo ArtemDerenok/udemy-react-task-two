@@ -6,6 +6,11 @@ const useMarvelService = () => {
   const _apiKey = process.env.REACT_APP_MARVEL_API_KEY;
   const _baseOffset = 210
   
+  const getCharacterByName = async (name) => {
+    const res = await request(`${_apiBase}characters?name=${name}&apikey=${_apiKey}`);
+    return res.data.results[0] ? _transformCharacterForForm(res.data.results[0]) : false;
+  }
+  
   const getAllCharacters = async (offset = _baseOffset) => {
     const res = await request(`${_apiBase}characters?limit=9&offset=${offset}&apikey=${_apiKey
     }`);
@@ -52,7 +57,14 @@ const useMarvelService = () => {
   }
   }
   
-  return {loading, error, getAllCharacters, getCharacter, clearError, getAllComics, getComic}
+  const _transformCharacterForForm = (char) => {
+    return {
+      name: char.name,
+      id: char.id,
+    }
+  }
+  
+  return {loading, error, getAllCharacters, getCharacter, clearError, getAllComics, getComic, getCharacterByName}
 };
 
 export default useMarvelService;

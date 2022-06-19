@@ -8,10 +8,9 @@ const useHttp = () => {
     'Content-Type': 'application/json'
   }) => {
     setLoadingValue(true);
-    
     try {
         const response = await fetch(url, {method, body, headers});
-    
+        
         if (!response.ok) {
           throw new Error(`Could not fetch ${url}. Status error: ${response.status}`)
         }

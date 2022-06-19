@@ -4,6 +4,7 @@ import useMarvelService from '../../services/MarvelService';
 import Spinner from '../spinner/Spinner';
 import ErrorMessage from '../errorMessage/errorMessage';
 import Skeleton from '../skeleton/Skeleton';
+import CharSearchForm from '../charSearchForm/CharSearchForm';
 import './charInfo.scss';
 
 const CharInfo = ({charId}) => {
@@ -36,12 +37,12 @@ const CharInfo = ({charId}) => {
     const content = !(error || loading || !char) ? <View char={char} /> : null;
         
     return (
-        <div className="char__info">
+        <div><div className="char__info">
             {skeleton}
             {errorMessage}
             {spinner}
             {content}
-        </div>
+        </div><CharSearchForm /></div>
     );
 }
 
@@ -83,7 +84,8 @@ const View = ({char}) => {
                         </li>
                     )
                 }) : 'There are no comics for this character'}
-            </ul></>
+            </ul>
+            </>
     )
 }
 
